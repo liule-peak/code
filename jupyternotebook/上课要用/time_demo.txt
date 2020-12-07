@@ -1,0 +1,88 @@
+# 时间序列简单来说：就是采用时间作为索引来进行相关的操作
+import numpy as np
+import pandas as pd
+from pandas import Series, DataFrame
+from datetime import datetime
+import matplotlib.pyplot as plt
+
+# 创建构造函数构造日期
+date_list = [
+    datetime(2016, 9, 1),
+    datetime(2016, 9, 10),
+    datetime(2017, 9, 1),
+    datetime(2016, 9, 20),
+    datetime(2017, 10, 1),
+]
+print('-' * 20, '如何通过日期获取数据', '-' * 20)
+# Series索引就是时间序列
+s1 = Series(np.random.rand(5), index=date_list)
+print(s1.values, s1.index)
+print(s1[0])
+# 通过日期获取数据
+print(s1[datetime(2016, 9, 10)])
+# 通过字符串方式获取批量数据
+print(s1['2016-09'])
+
+print('-' * 20, '通过data_range生成时间序列', '-' * 20)
+date_list = pd.date_range('2016-01-01', periods=30, freq='5h')
+s2 = Series(np.random.rand(len(date_list)), index=date_list)
+print(s2)
+
+
+print('-' * 20, '时间序列的采样', '-' * 20)
+date_list = pd.date_range(start='2016-01-01',end='2016-12-31')
+ss = Series(data=np.random.rand(len(date_list)),index=date_list)
+# 采样的前提是index必须为时间序列
+print(ss.resample('M').sum()/ss.resample('M').count())
+print('-'*100)
+print(ss.resample('M').mean())
+
+plt.rcParams['font.sans-serif'] = ['SimHei']
+data = pd.read_csv("./data/bike.csv")
+# 首先把datetime转化为日期类型
+data['datetime'] = pd.to_datetime(data['datetime'])
+data.info()
+# 把时间序列设置为索引
+data.set_index('datetime',inplace=True)
+print(data.head(n=3))
+# 按月进行采样,获取每月总租赁数据
+ss = data.resample('M')['count'].sum()
+data_2011 = ss['2011']
+data_2012 = ss['2012']
+print(data_2011,data_2012)
+# 生成月份的x轴数据
+attr = [f'{i}月' for i in range(1,13)]
+v1 = data_2011.values
+v2 = data_2012.values
+# 通过柱状图显示相关的租赁数据
+plt.bar(attr,v1,label='2011月份租赁')
+plt.bar(attr,v2,bottom=v1,label='2012月份租赁')
+plt.xlabel('月份')
+plt.ylabel('租赁总量')
+plt.legend()
+plt.show()
+
+lt.rcParams['font.sans-serif'] = ['SimHei']
+data = pd.read_csv("../data/bike.csv")
+# 首先把datetime转化为日期类型
+data['datetime'] = pd.to_datetime(data['datetime'])
+data.info()
+# 把时间序列设置为索引
+data.set_index('datetime',inplace=True)
+print(data.head(n=3))
+print('-'*20,'对日期的采样,统计每天的骑行数据','-'*20)
+d_bike = data.resample('d')['count'].mean()
+print(d_bike,type(d_bike))
+# 先创建新的day,hour
+data['day'] = data.index.day
+data['hour'] = data.index.hour
+print(data,type(data))
+print('通过分组统计每小时的骑行记录')
+h_bike = data.groupby(by='hour')['count'].sum()
+print(h_bike,type(h_bike))
+# 采用线性图,查看每小时的骑行数据
+plt.plot(h_bike.index,h_bike.values,'r--*')
+# 自定义刻度坐标值
+plt.xticks(range(h_bike.size),[i+1 for i in range(h_bike.size)])
+plt.savefig('./h_bike.jpg')
+plt.show()

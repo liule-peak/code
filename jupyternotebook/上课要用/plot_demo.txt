@@ -1,0 +1,136 @@
+1、第一部分（读入文件，散点图）
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+# # github中加载远程的数据集
+# tips = sns.load_dataset("tips")
+# print(tips.type(tips))
+# tips.info()
+# print(tips.head(n=3))
+# # DataFrame保存csv格式
+# tips.to_csv("../data/tips.csv",index_label='row_id')
+# 设置微软雅黑，支持中文显示
+plt.rcParams['font.sans-serif'] = ['SimHei']
+tips = pd.read_csv('../data/tips.csv')
+tips.info()
+# 如果是相关性,则建议采用散点图
+plt.scatter(tips['total_bill'],tips['tip'])
+# 对x,y输入标题
+plt.xlabel('消费金额')
+plt.ylabel('小费金额')
+# 所有可视化都需要调用show函数
+plt.show()
+
+
+2、第二部分（柱状图）
+import pandas as pd
+import matplotlib.pyplot as plt
+
+# 设置微软雅黑，支持中文显示
+plt.rcParams['font.sans-serif'] = ['SimHei']
+tips = pd.read_csv('../data/tips.csv')
+tips.info()
+print('性别与小费的相关性可视化')
+male_mean = tips[tips['sex'] == 'Male']['tip'].mean()
+female_mean = tips[tips['sex'] == 'Female']['tip'].mean()
+# 采用bar柱状图显示金额
+male=['Male','Female']
+xx=range(len(male))
+plt.xticks(xx,male)
+plt.bar(xx,[male_mean,female_mean],width=0.5,color='#ff0000')
+plt.title('bar柱状图可视化案例')
+plt.show()
+# 采用分组的方式，实现就餐日期与消费金额的关联性
+ss = tips.groupby(by='day')['total_bill'].sum()
+print(ss,type(ss))
+# 可视化中Series可以和可视化组件进行无缝转化
+plt.bar(ss.index,ss.values,color='#00ff00')
+plt.title('就餐日期与消费的柱状图')
+plt.show()
+
+3、第三部分（饼图）
+# 如何获取数据源
+import pandas as pd
+import matplotlib.pyplot as plt
+
+# 设置微软雅黑，支持中文显示
+plt.rcParams['font.sans-serif'] = ['SimHei']
+tips = pd.read_csv('../data/tips.csv')
+tips.info()
+# value_counts(必须作用于某列)：对某一列进行分组然后求和
+time = tips['time'].value_counts()
+print(time,type(time))
+# 创建饼图
+plt.pie(labels=time.index,x=time.values,autopct='%4.2f%%')
+plt.show()
+
+# 新建列，存储相关的数据(例如：小费百分比)
+tips['percent_tip'] = round(tips['tip']/(tips['total_bill']+tips['tip']),2)
+tips.to_csv("../data/tip2.csv",index=False)
+
+4、第四部分（折线图，图片）
+# 可视化的高级参数设置
+import numpy as np
+import matplotlib.pyplot as plt
+
+# 设置微软雅黑，支持中文显示
+plt.rcParams['font.sans-serif'] = ['SimHei']
+print('-' * 20, '年份与GDP的折线图', '-' * 20)
+years = [str(year) + "年" for year in range(2010, 2020)]
+# print(years)
+gdp = np.random.randint(300, 1000, size=10)
+# print(gdp)
+# plt.plot(years, gdp, color="green", marker='*',linestyle='--')
+plt.plot(years, gdp, 'r--*')
+plt.show()
+
+print('-' * 20, '饼图与保存图片', '-' * 20)
+
+data = {
+    '南京': (60, '#7199cf'),
+    '上海': (45, '#4fc4aa'),
+    '北京': (120, '#ffff10'),
+}
+# 设置绘图片的信息
+cities = data.keys()
+values = [x[0] for x in data.values()]
+colors = [x[1] for x in data.values()]
+plt.pie(x=values, explode=[0.2, 0.05, 0.05], labels=data.keys(), colors=colors, autopct='%4.2f%%')
+plt.show()
+
+
+5、第五部分（高级部分）
+# 可视化的高级参数设置
+import numpy as np
+import matplotlib.pyplot as plt
+
+# 设置微软雅黑，支持中文显示
+plt.rcParams['font.sans-serif'] = ['SimHei']
+print('-' * 20, '层叠柱状图的可视化操作', '-' * 20)
+data1 = np.random.randint(20, 50, size=5)
+data2 = np.random.randint(20, 50, size=5)
+# 模拟x轴的坐标值
+x = np.arange(1, 6)
+print(data1, data2)
+plt.bar(x, data1, label='A')
+plt.bar(x, data2, bottom=data1, label='B')
+# label要显示则调用此方法
+plt.legend()
+plt.show()
+
+print('-' * 20, '层叠柱状图的可视化操作2', '-' * 20)
+data1 = np.random.randint(20, 50, size=5)
+
+for a, b in zip(x, data1):
+    plt.text(a, b + 0.5, b, ha='center', fontsize=12)
+
+data2 = np.random.randint(20, 50, size=5)
+
+for a, b in zip(x, data2):
+    plt.text(a + 0.3, b + 0.5, b, ha='center', fontsize=12)
+
+x = np.arange(1, 6)
+plt.bar(x, data1, width=0.3, label='A')
+plt.bar(x + 0.3, data2, width=0.3, label='B')
+plt.legend()
+plt.show()

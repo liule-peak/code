@@ -1,0 +1,11 @@
+CREATE TABLE "registrants" ("id" integer,"name" varchar(255),"dorm" varchar(255));
+INSERT INTO registrants(id,name,dorm) VALUES(1,"Brian","Pennypacker");
+INSERT INTO registrants(id,name,dorm) VALUES(2,"David","Matthews");
+SELECT * FROM registrants;
+SELECT * FROM registrants WHERE dorm = "Matthews";
+SELECT name FROM registrants WHERE dorm = "Matthews";
+UPDATE registrants SET dorm = "Cannaday" WHERE name = "Brain";
+SELECT * FROM registrants;
+DELETE FROM registrants WHERE id = 1;
+SELECT * FROM registrants;
+INSERT INTO registrants(id,name,dorm) VALUES(3,"Peter","Pennypacker");

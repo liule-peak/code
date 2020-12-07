@@ -1,0 +1,4 @@
+第一步：在Anaconda Prompt 命令行输入窗口输入：jupyter notebook --generate-config
+
+第二步：打开Anaconda的安装路径，找到一个名为.jupyter的文件夹，里面有一个文件名为jupyter_notebook_config.py文件，用记事本软件打开，找到#c.NotebookApp.notebook_dir = ' '，将前面的#号删除，并将需要设定启动目录填入=号后面的单引号内：c.NotebookApp.notebook_dir = 'D:\\OneDrive\\jupyter'，修改完成后，保存文件后退出 。
+
